@@ -22,11 +22,9 @@ def main():
         st.write(data.head())
 
         label_encoder = LabelEncoder()
-        encoded_columns = {}
         for column in data.columns:
             if data[column].dtype == 'object':
                 data[column] = label_encoder.fit_transform(data[column])
-                encoded_columns[column] = label_encoder.classes_
 
         label = st.text_input("Masukkan nama kolom label:")
 
@@ -96,20 +94,13 @@ def main():
                     axes[i].set_title(column)
                 st.pyplot(fig)
 
-                # Prediksi dengan model dan konversi hasil ke nama asli
-                predictions = model.predict(data.drop(columns=[label]))
-                pred_labels = label_encoder.inverse_transform(predictions)
-
-                # Tambahkan kolom hasil prediksi ke dataset asli dengan label asli
-                data['Prediksi'] = pred_labels
-
                 csv = data.to_csv(index=False)
                 b64 = base64.b64encode(csv.encode()).decode()
-                href = f'<a href="data:file/csv;base64,{b64}" download="dataset_hasil_prediksi.csv">\
+                href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">\
                         <button style="background-color:#4CAF50; border: none; color: white; padding: 15px 32px;\
                         text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px;\
                         cursor: pointer;">\
-                        Unduh Dataset Hasil Prediksi</button></a>'
+                        Unduh Dataset</button></a>'
                 st.markdown(href, unsafe_allow_html=True)
         else:
             st.warning("Silakan masukkan nama kolom label untuk data terlebih dahulu.")
